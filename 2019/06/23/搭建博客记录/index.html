@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"www.abrocks.com","root":"/","images":"/images","scheme":"Muse","version":"8.2.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}};
+  </script>
+<meta name="description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;在Ubuntu18.04.2环境下，使用nginx1.14.0+gunicorn19.9.0+MySQL5.7.26的方式搭建Django博客，博客使用的是DjangoBlog v7.0（python3.6和Django2.1）。 开始准备&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;首先给服务器重装Ubuntu的镜像，我选择的目前阿里云上最新的版">
+<meta property="og:type" content="article">
+<meta property="og:title" content="搭建博客记录">
+<meta property="og:url" content="https://www.abrocks.com/2019/06/23/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="阿布洛克斯">
+<meta property="og:description" content="&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;在Ubuntu18.04.2环境下，使用nginx1.14.0+gunicorn19.9.0+MySQL5.7.26的方式搭建Django博客，博客使用的是DjangoBlog v7.0（python3.6和Django2.1）。 开始准备&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;首先给服务器重装Ubuntu的镜像，我选择的目前阿里云上最新的版">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-06-23T15:42:51.000Z">
+<meta property="article:modified_time" content="2020-03-07T07:57:24.000Z">
+<meta property="article:author" content="Eiby Shen">
+<meta property="article:tag" content="Django">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.abrocks.com/2019/06/23/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E8%AE%B0%E5%BD%95/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<title>搭建博客记录 | 阿布洛克斯</title>
+  
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">阿布洛克斯</h1>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">君子慎独，不欺暗室。卑以自牧，含章可贞。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">开始准备</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL"><span class="nav-number">2.</span> <span class="nav-text">MySQL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85MySQL"><span class="nav-number">2.1.</span> <span class="nav-text">安装MySQL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-number">2.2.</span> <span class="nav-text">安装配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A3%80%E6%9F%A5%E6%9C%8D%E5%8A%A1%E7%8A%B6%E6%80%81%EF%BC%9A"><span class="nav-number">2.3.</span> <span class="nav-text">检查服务状态：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%BF%9C%E7%A8%8B%E8%AE%BF%E9%97%AE"><span class="nav-number">2.4.</span> <span class="nav-text">配置远程访问</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#MySQL5-7-26%E7%9A%84%E5%9D%91"><span class="nav-number">3.</span> <span class="nav-text">MySQL5.7.26的坑</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E9%87%8D%E5%90%AF%E4%B8%8D%E6%88%90%E5%8A%9F"><span class="nav-number">3.1.</span> <span class="nav-text">1.重启不成功</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-DjangoBlog%E5%8D%9A%E5%AE%A2%E7%9A%84%E5%85%BC%E5%AE%B9%E9%97%AE%E9%A2%98"><span class="nav-number">3.2.</span> <span class="nav-text">2.DjangoBlog博客的兼容问题</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#FTP"><span class="nav-number">4.</span> <span class="nav-text">FTP</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85ftp%E5%B7%A5%E5%85%B7"><span class="nav-number">4.1.</span> <span class="nav-text">安装ftp工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">4.2.</span> <span class="nav-text">配置服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%87%8D%E5%90%AFftp%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">4.3.</span> <span class="nav-text">重启ftp服务器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%99%BB%E5%BD%95ftp%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-number">4.4.</span> <span class="nav-text">登录ftp服务器</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Python3"><span class="nav-number">5.</span> <span class="nav-text">Python3</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Python3"><span class="nav-number">5.1.</span> <span class="nav-text">安装Python3</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85pip3"><span class="nav-number">5.2.</span> <span class="nav-text">安装pip3</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#virtualenv"><span class="nav-number">6.</span> <span class="nav-text">virtualenv</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85virtualenvwrapper"><span class="nav-number">6.1.</span> <span class="nav-text">安装virtualenvwrapper</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#DjangoBlog"><span class="nav-number">7.</span> <span class="nav-text">DjangoBlog</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E5%8D%9A%E5%AE%A2%E9%85%8D%E7%BD%AE"><span class="nav-number">7.1.</span> <span class="nav-text">修改博客配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAvirtualenv"><span class="nav-number">7.2.</span> <span class="nav-text">创建virtualenv</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%81%E7%A7%BB"><span class="nav-number">7.3.</span> <span class="nav-text">数据库迁移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%B6%85%E7%BA%A7%E7%94%A8%E6%88%B7"><span class="nav-number">7.4.</span> <span class="nav-text">创建超级用户</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%94%B6%E9%9B%86%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6"><span class="nav-number">7.5.</span> <span class="nav-text">收集静态文件</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NGINX"><span class="nav-number">8.</span> <span class="nav-text">NGINX</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85nginx"><span class="nav-number">8.1.</span> <span class="nav-text">安装nginx</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEnginx-conf"><span class="nav-number">8.2.</span> <span class="nav-text">配置nginx.conf</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8nginx"><span class="nav-number">8.3.</span> <span class="nav-text">启动nginx</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%94%B6%E5%B0%BE"><span class="nav-number">9.</span> <span class="nav-text">收尾</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83%E4%B8%8B%E5%AE%89%E8%A3%85gunicorn"><span class="nav-number">9.1.</span> <span class="nav-text">在虚拟环境下安装gunicorn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%AF%E5%8A%A8gunicorn"><span class="nav-number">9.2.</span> <span class="nav-text">启动gunicorn</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E5%9F%9F%E5%90%8D"><span class="nav-number">9.3.</span> <span class="nav-text">设置域名</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%97%ADgunicorn"><span class="nav-number">9.4.</span> <span class="nav-text">关闭gunicorn</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">10.</span> <span class="nav-text">参考</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eiby Shen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.abrocks.com/2019/06/23/%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2%E8%AE%B0%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eiby Shen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿布洛克斯">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          搭建博客记录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-06-23 23:42:51" itemprop="dateCreated datePublished" datetime="2019-06-23T23:42:51+08:00">2019-06-23</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2020-03-07 15:57:24" itemprop="dateModified" datetime="2020-03-07T15:57:24+08:00">2020-03-07</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Django/" itemprop="url" rel="index"><span itemprop="name">Django</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>&ensp;&ensp;&ensp;&ensp;在Ubuntu18.04.2环境下，使用nginx1.14.0+gunicorn19.9.0+MySQL5.7.26的方式搭建Django博客，博客使用的是<a target="_blank" rel="noopener" href="https://github.com/liangliangyy/DjangoBlog" title="DjangoBlog">DjangoBlog v7.0</a>（python3.6和Django2.1）。</p>
+<h1 id="开始准备"><a href="#开始准备" class="headerlink" title="开始准备"></a>开始准备</h1><p>&ensp;&ensp;&ensp;&ensp;首先给服务器重装Ubuntu的镜像，我选择的目前阿里云上最新的版本18.04.2。<br>&ensp;&ensp;&ensp;&ensp;在安装之前，需要更新apt-get工具：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get update</span><br></pre></td></tr></table></figure>
+
+<h1 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h1><h2 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install mysql-server</span><br></pre></td></tr></table></figure>
+<h2 id="安装配置"><a href="#安装配置" class="headerlink" title="安装配置"></a>安装配置</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo mysql_secure_installation</span><br></pre></td></tr></table></figure>
+<h2 id="检查服务状态："><a href="#检查服务状态：" class="headerlink" title="检查服务状态："></a>检查服务状态：</h2><span id="more"></span>
+
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl status mysql.service</span><br></pre></td></tr></table></figure>
+<h2 id="配置远程访问"><a href="#配置远程访问" class="headerlink" title="配置远程访问"></a>配置远程访问</h2><p>&ensp;&ensp;&ensp;&ensp;首先在<code>/etc/mysql/mysql.conf.d/mysqld.cnf</code>文件中注释掉<br><code>bind-address = 127.0.0.1</code><br>&ensp;&ensp;&ensp;&ensp;然后在数据库中执行命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT ALL PRIVILEGES ON *.* TO root@localhost IDENTIFIED BY &quot;123456&quot;;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这一条命令，让所有IP的服务器都可以连接这台数据库，同时将root用户的密码更改为123456。如果已经设置过数据库，要单独让特定用户远程方位某个数据库，可以执行命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">GRANT ALL PRIVILEGES ON djangoblog.* TO djangouser@localhost IDENTIFIED BY &quot;123456&quot;;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;以上<code>djangoblog</code>为数据库名称，<code>djangouser</code>为用户账号。在执行完GRANT命令之后，需要再执行一下以下命令，否则可能不生效：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
+<h1 id="MySQL5-7-26的坑"><a href="#MySQL5-7-26的坑" class="headerlink" title="MySQL5.7.26的坑"></a>MySQL5.7.26的坑</h1><h2 id="1-重启不成功"><a href="#1-重启不成功" class="headerlink" title="1.重启不成功"></a>1.重启不成功</h2><p>&ensp;&ensp;&ensp;&ensp;数据库重启可能会不成功，报错：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Restarting mysql (via systemctl): mysql.serviceJob for mysql.service failed because the control process exited with error code. See &quot;systemctl status mysql.service&quot;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;解决方法是在<code>/etc/mysql/my.cnf</code>文件中添加以下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[client]</span><br><span class="line">socket=/var/lib/mysql/mysql.sock</span><br><span class="line">[mysqld]</span><br><span class="line">socket=/var/lib/mysql/mysql.sock</span><br></pre></td></tr></table></figure>
+<h2 id="2-DjangoBlog博客的兼容问题"><a href="#2-DjangoBlog博客的兼容问题" class="headerlink" title="2.DjangoBlog博客的兼容问题"></a>2.DjangoBlog博客的兼容问题</h2><p>&ensp;&ensp;&ensp;&ensp;DjangoBlog程序推荐数据库使用utf8mb4，但是如果使用MySQL5.6时，当执行数据库迁移操作<code>python manage.py migrate</code>时，会报错提示说索引值大于了限制。解决的方案，要么使用MySQL5.7及以上，如果要使用MySQL5.6的话，charset设置为utf8。</p>
+<h1 id="FTP"><a href="#FTP" class="headerlink" title="FTP"></a>FTP</h1><h2 id="安装ftp工具"><a href="#安装ftp工具" class="headerlink" title="安装ftp工具"></a>安装ftp工具</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install vsftpd ftp</span><br></pre></td></tr></table></figure>
+<h2 id="配置服务器"><a href="#配置服务器" class="headerlink" title="配置服务器"></a>配置服务器</h2><p>&ensp;&ensp;&ensp;&ensp;在<code>/etc/vsftpd_conf</code>中放掉下面两句命令的注释–删除前面的“#”号：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">write_enable=YES</span><br><span class="line">utf8_filesystem=YES</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;注，在使用vim命令时，可以使用“/”号对文档进行搜索，搜索到了内容就按enter即可退回到查看模式。</p>
+<h2 id="重启ftp服务器"><a href="#重启ftp服务器" class="headerlink" title="重启ftp服务器"></a>重启ftp服务器</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl restart vsftpd</span><br></pre></td></tr></table></figure>
+<h2 id="登录ftp服务器"><a href="#登录ftp服务器" class="headerlink" title="登录ftp服务器"></a>登录ftp服务器</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ftp localhost</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;此时需要你输入当前账号的密码，如果账号是root的话，可能会报错，530。因为默认是不能使用root账号登录ftp的，解决的办法是把<code>/etc/ftpusers</code>文件中的<code>root</code>给注释掉即可使用root账号登录ftp了。</p>
+<h1 id="Python3"><a href="#Python3" class="headerlink" title="Python3"></a>Python3</h1><h2 id="安装Python3"><a href="#安装Python3" class="headerlink" title="安装Python3"></a>安装Python3</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install python3</span><br></pre></td></tr></table></figure>
+<h2 id="安装pip3"><a href="#安装pip3" class="headerlink" title="安装pip3"></a>安装pip3</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install python3-pip</span><br></pre></td></tr></table></figure>
+<h1 id="virtualenv"><a href="#virtualenv" class="headerlink" title="virtualenv"></a>virtualenv</h1><p>##安装 virtualenv</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install virtualenv</span><br></pre></td></tr></table></figure>
+<h2 id="安装virtualenvwrapper"><a href="#安装virtualenvwrapper" class="headerlink" title="安装virtualenvwrapper"></a>安装virtualenvwrapper</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install virtualenvwrapper</span><br></pre></td></tr></table></figure>
+<h1 id="DjangoBlog"><a href="#DjangoBlog" class="headerlink" title="DjangoBlog"></a>DjangoBlog</h1><h2 id="修改博客配置"><a href="#修改博客配置" class="headerlink" title="修改博客配置"></a>修改博客配置</h2><p>&ensp;&ensp;&ensp;&ensp;首先修改<code>DjangoBlog/setting.py</code>文件中数据库配置：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"> DATABASES = &#123;</span><br><span class="line">    &#x27;default&#x27;: &#123;</span><br><span class="line">        &#x27;ENGINE&#x27;: &#x27;django.db.backends.mysql&#x27;,</span><br><span class="line">        &#x27;NAME&#x27;: &#x27;djangoblog&#x27;,</span><br><span class="line">        &#x27;USER&#x27;: &#x27;root&#x27;,</span><br><span class="line">        &#x27;PASSWORD&#x27;: &#x27;password&#x27;,</span><br><span class="line">        &#x27;HOST&#x27;: &#x27;host&#x27;,</span><br><span class="line">        &#x27;PORT&#x27;: 3306,</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;然后修改文件里<code>debug</code>模式为<code>False</code>，整套博客程序就可以通过ftp工具上传到服务器上去了。</p>
+<h2 id="创建virtualenv"><a href="#创建virtualenv" class="headerlink" title="创建virtualenv"></a>创建virtualenv</h2><p>&ensp;&ensp;&ensp;&ensp;在上传到服务器的博客程序里，与<code>manage.py</code>文件同一层级下，创建虚拟环境：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkvirtualenv -p python3 newvenv</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;其中<code>newvenv</code>是虚拟环境的名字，系统自动创建了一个<code>newvenv</code>文件夹，我们可以直接在当前路径执行以下命令，来进入虚拟环境状态：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">source newvenv/bin/activate</span><br></pre></td></tr></table></figure>
+<h2 id="数据库迁移"><a href="#数据库迁移" class="headerlink" title="数据库迁移"></a>数据库迁移</h2><p>&ensp;&ensp;&ensp;&ensp;在同一个路径下，执行数据库迁移：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py makemigrations</span><br><span class="line">python manage.py migrate</span><br></pre></td></tr></table></figure>
+<h2 id="创建超级用户"><a href="#创建超级用户" class="headerlink" title="创建超级用户"></a>创建超级用户</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python manage.py createsuperuser</span><br></pre></td></tr></table></figure>
+<h2 id="收集静态文件"><a href="#收集静态文件" class="headerlink" title="收集静态文件"></a>收集静态文件</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python manage.py collectstatic --noinput</span><br><span class="line">python manage.py compress --force</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;以上两步如果不执行的话，进入后台的时候是看不到css和js等资源的，页面混乱。</p>
+<h1 id="NGINX"><a href="#NGINX" class="headerlink" title="NGINX"></a>NGINX</h1><h2 id="安装nginx"><a href="#安装nginx" class="headerlink" title="安装nginx"></a>安装nginx</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install nginx</span><br></pre></td></tr></table></figure>
+<h2 id="配置nginx-conf"><a href="#配置nginx-conf" class="headerlink" title="配置nginx.conf"></a>配置nginx.conf</h2><p>&ensp;&ensp;&ensp;&ensp;在<code>/etc/nginx/nginx.conf</code>文件中添加server的信息。原文件底部有被注释掉的server位置，可以直接把server的信息添加进去：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">               listen 80;  # 监听的端口</span><br><span class="line">               server_name blog.example.com;</span><br><span class="line">   </span><br><span class="line">               #当请求这些server name的时候，nginx才会做反向代理，0.0.0.0是指全部</span><br><span class="line">               location / &#123;</span><br><span class="line">                    proxy_pass http://127.0.0.1:8000;</span><br><span class="line">                    proxy_set_header Host $host;</span><br><span class="line">                    proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line">                    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">                    proxy_set_header X-Forwarded-Proto $scheme;</span><br><span class="line">                &#125; </span><br><span class="line">               # location 顾名思义，定位，就是当访问 / 的时候，nginx会将请求转给本地的8000端口，而后面的设置都是一些基本的配置，可以直接用</span><br><span class="line">               location /static &#123;</span><br><span class="line">                    alias /var/www/wwwroot/djangoblog/collectedstatic/;</span><br><span class="line">               &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;以上配置，顶部的两句配置，是用户通过blog.example.com这个端口访问时，nginx就会转发到127.0.0.1:8000去，底下<code>alias</code>指向的是博客程序中<code>collectedstatic</code>文件的绝对路径，注意末尾的“/”可不要弄丢了。</p>
+<h2 id="启动nginx"><a href="#启动nginx" class="headerlink" title="启动nginx"></a>启动nginx</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">service nginx start</span><br></pre></td></tr></table></figure>
+
+<h1 id="收尾"><a href="#收尾" class="headerlink" title="收尾"></a>收尾</h1><h2 id="在虚拟环境下安装gunicorn"><a href="#在虚拟环境下安装gunicorn" class="headerlink" title="在虚拟环境下安装gunicorn"></a>在虚拟环境下安装gunicorn</h2><p>&ensp;&ensp;&ensp;&ensp;由于DjangoBlog程序的依赖中没有gunicorn，所以我们需要自己安装：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install gunicorn</span><br></pre></td></tr></table></figure>
+<h2 id="启动gunicorn"><a href="#启动gunicorn" class="headerlink" title="启动gunicorn"></a>启动gunicorn</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">gunicorn DjangoBlog.wsgi:application -b 127.0.0.1:8000</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;这里设置的端口和地址要和之前nginx配置的一一对应。</p>
+<h2 id="设置域名"><a href="#设置域名" class="headerlink" title="设置域名"></a>设置域名</h2><p>&ensp;&ensp;&ensp;&ensp;在域名注册商那里把自己的域名设置A指向到服务器的ip，等几分钟，应该就可以访问到博客了。</p>
+<h2 id="关闭gunicorn"><a href="#关闭gunicorn" class="headerlink" title="关闭gunicorn"></a>关闭gunicorn</h2><p>&ensp;&ensp;&ensp;&ensp;直接杀死进程就可以了。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -aux | grep gunicorn</span><br></pre></td></tr></table></figure>
+<p>&ensp;&ensp;&ensp;&ensp;然后</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -9  &#123;进程号&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixx3/article/details/80782479" title="Ubuntu18.04 安装MySQL">Ubuntu18.04 安装MySQL</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/orangezs/p/8341723.html" title="ubuntu16.04,mysql5.7重启不成功。Restarting mysql (via systemctl): mysql.serviceJob for mysql.service failed because the control process exited with error code. See &#39;systemctl status mysql.service&#39;">ubuntu16.04,mysql5.7重启不成功。Restarting mysql (via systemctl): mysql.serviceJob for mysql.service failed because the control process exited with error code. See “systemctl status mysql.service”</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/yasmi/p/4832461.html" title="ubuntu 安装python3">ubuntu 安装python3</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/zongfa/p/8213488.html" title="ubuntu16.04下ftp服务器的安装与配置">ubuntu16.04下ftp服务器的安装与配置</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/kan2016/article/details/81639461" title="python虚拟环境之二：virtualenv和virtualenvwrapper安装与使用（ubuntu18.04演示）">python虚拟环境之二：virtualenv和virtualenvwrapper安装与使用（ubuntu18.04演示）</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/EasonJim/p/7806879.html" title="Ubuntu 16.04安装Nginx">Ubuntu 16.04安装Nginx</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.linuxidc.com/Linux/2018-05/152257.htm" title="如何在Ubuntu 18.04上安装Nginx">如何在Ubuntu 18.04上安装Nginx</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.lylinux.org/%E4%BD%BF%E7%94%A8nginxgunicornvirtualenvsupervisor%E6%9D%A5%E9%83%A8%E7%BD%B2django%E9%A1%B9%E7%9B%AE.html" title="使用Nginx+Gunicorn+virtualenv+supervisor来部署django项目">使用Nginx+Gunicorn+virtualenv+supervisor来部署django项目</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Django/" rel="tag"># Django</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/06/23/%E4%BD%BF%E7%94%A8Fiddler%E6%8A%93%E5%8C%85%EF%BC%8C%E5%BA%94%E7%94%A8%E5%86%85%E9%93%BE%E6%8E%A5%E6%97%A0%E6%B3%95%E8%AE%BF%E9%97%AE/" rel="next" title="使用Fiddler抓包，应用内链接无法访问">
+                  使用Fiddler抓包，应用内链接无法访问 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">渝ICP备15006599号 </a>
+      <img src="http://img.abrocks.com/beianbeian.png" style="display: inline-block;"><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=50010702500853" rel="noopener" target="_blank">渝公网安备 50010702500853号 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eiby Shen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
