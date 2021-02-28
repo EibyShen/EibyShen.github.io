@@ -2,6 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://www.abrocks.com/2021/02/27/Mac%E5%AE%89%E8%A3%85mysqlclient%E9%81%87%E5%88%B0%E7%9A%84%E5%9D%91/</loc>
+    
+    <lastmod>2021-02-28</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://www.abrocks.com/about/index.html</loc>
+    
+    <lastmod>2021-02-27</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://www.abrocks.com/2020/08/31/%E6%90%AC%E5%AE%B6%E5%B0%8F%E7%BB%93/</loc>
     
     <lastmod>2021-02-27</lastmod>
@@ -26,13 +40,6 @@
     <loc>https://www.abrocks.com/categories/index.html</loc>
     
     <lastmod>2021-02-27</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://www.abrocks.com/about/index.html</loc>
-    
-    <lastmod>2021-02-25</lastmod>
     
   </url>
   
@@ -109,7 +116,7 @@
 
   <url>
     <loc>https://www.abrocks.com/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -117,56 +124,77 @@
   
   <url>
     <loc>https://www.abrocks.com/tags/Fiddler/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/tags/java/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/tags/Pycharm/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/tags/MacOS/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/tags/fiddler/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/tags/%E5%AE%B6%E5%B1%85/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/tags/%E7%94%9F%E6%B4%BB/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/tags/Django/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.abrocks.com/tags/django/</loc>
+    <lastmod>2021-02-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.abrocks.com/tags/mysql/</loc>
+    <lastmod>2021-02-28</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://www.abrocks.com/tags/Mac/</loc>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -175,42 +203,42 @@
   
   <url>
     <loc>https://www.abrocks.com/categories/%E6%8E%A5%E5%8F%A3%E6%B5%8B%E8%AF%95/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/categories/Java%E5%9F%BA%E7%A1%80/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/categories/Fiddler/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/categories/Postgre/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/categories/%E5%AE%B6%E5%B1%85%E7%94%9F%E6%B4%BB/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://www.abrocks.com/categories/Django/</loc>
-    <lastmod>2021-02-27</lastmod>
+    <lastmod>2021-02-28</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
