@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.abrocks.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="break基本用法&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;break语句在循环中起到一个终止该循环的作用 12345678public static void printBreak() &amp;#123;        for (int i &#x3D; 0; i &lt; 4; i++) &amp;#123;            if(i &gt;&#x3D;2)&amp;#123;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java中循环控制跳转语句continue和break的用法">
+<meta property="og:url" content="https://www.abrocks.com/2020/03/07/Java%E4%B8%AD%E5%BE%AA%E7%8E%AFcontinue%E7%9A%84%E7%94%A8%E6%B3%95/index.html">
+<meta property="og:site_name" content="阿布洛克斯">
+<meta property="og:description" content="break基本用法&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;break语句在循环中起到一个终止该循环的作用 12345678public static void printBreak() &amp;#123;        for (int i &#x3D; 0; i &lt; 4; i++) &amp;#123;            if(i &gt;&#x3D;2)&amp;#123;">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-07T07:51:51.000Z">
+<meta property="article:modified_time" content="2022-07-03T09:02:09.181Z">
+<meta property="article:author" content="Eiby Shen">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.abrocks.com/2020/03/07/Java%E4%B8%AD%E5%BE%AA%E7%8E%AFcontinue%E7%9A%84%E7%94%A8%E6%B3%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.abrocks.com/2020/03/07/Java%E4%B8%AD%E5%BE%AA%E7%8E%AFcontinue%E7%9A%84%E7%94%A8%E6%B3%95/","path":"2020/03/07/Java中循环continue的用法/","title":"Java中循环控制跳转语句continue和break的用法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java中循环控制跳转语句continue和break的用法 | 阿布洛克斯</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">阿布洛克斯</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">谦虚，慎独，自省，感恩</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#break%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">break基本用法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#continue%E5%9F%BA%E6%9C%AC%E7%94%A8%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">continue基本用法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97%E5%BE%AA%E7%8E%AF%E4%B8%ADbreak%E7%9A%84%E7%94%A8%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">嵌套循环中break的用法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B5%8C%E5%A5%97%E5%BE%AA%E7%8E%AF%E4%B8%ADcontinue%E7%9A%84%E7%94%A8%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">嵌套循环中continue的用法</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eiby Shen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.abrocks.com/2020/03/07/Java%E4%B8%AD%E5%BE%AA%E7%8E%AFcontinue%E7%9A%84%E7%94%A8%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eiby Shen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿布洛克斯">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java中循环控制跳转语句continue和break的用法 | 阿布洛克斯">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java中循环控制跳转语句continue和break的用法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-03-07 15:51:51" itemprop="dateCreated datePublished" datetime="2020-03-07T15:51:51+08:00">2020-03-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-07-03 17:02:09" itemprop="dateModified" datetime="2022-07-03T17:02:09+08:00">2022-07-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="Java中循环控制跳转语句continue和break的用法" href="/2020/03/07/Java%E4%B8%AD%E5%BE%AA%E7%8E%AFcontinue%E7%9A%84%E7%94%A8%E6%B3%95/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::190038dd29ceab088feda038b31aa9e5" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="break基本用法"><a href="#break基本用法" class="headerlink" title="break基本用法"></a>break基本用法</h1><p>&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;break语句在循环中起到一个终止该循环的作用</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">printBreak</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(i &gt;=<span class="number">2</span>)&#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;输出的结果为：</p>
+<span id="more"></span>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">0</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+
+<h1 id="continue基本用法"><a href="#continue基本用法" class="headerlink" title="continue基本用法"></a>continue基本用法</h1><p>&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;continue语句在循环中表示当前这一循环不再往下进行，继续进入下一轮循环</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">printContinue</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">4</span>; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span>(i&gt;<span class="number">1</span> &amp;&amp; i &lt;<span class="number">3</span>)&#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(i);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;输出的结果为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">0</span><br><span class="line">1</span><br><span class="line">3</span><br></pre></td></tr></table></figure>
+
+<h1 id="嵌套循环中break的用法"><a href="#嵌套循环中break的用法" class="headerlink" title="嵌套循环中break的用法"></a>嵌套循环中break的用法</h1><p>&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;嵌套循环中，break语句如果在最里层的循环中，那么只中断最里层的循环。如果要中断外层的循环，需要引用标签。一般情况下，标签使用Outer和inner分别表示外层循环和内层循环。但是这不是关键字，可以任意自定义。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">printOutBreak</span><span class="params">()</span>&#123;</span><br><span class="line">        one:</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            two:</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; <span class="number">3</span>; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span>(i &gt;=<span class="number">5</span> &amp;&amp; j &gt;=<span class="number">2</span>)&#123;</span><br><span class="line">                    <span class="keyword">break</span> one;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                System.out.println(<span class="string">&quot;one:&quot;</span> + i + <span class="string">&quot;, two&quot;</span> + j);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;输出的结果为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">one:0, two0</span><br><span class="line">one:0, two1</span><br><span class="line">one:0, two2</span><br><span class="line">one:1, two0</span><br><span class="line">one:1, two1</span><br><span class="line">one:1, two2</span><br><span class="line">one:2, two0</span><br><span class="line">one:2, two1</span><br><span class="line">one:2, two2</span><br><span class="line">one:3, two0</span><br><span class="line">one:3, two1</span><br><span class="line">one:3, two2</span><br><span class="line">one:4, two0</span><br><span class="line">one:4, two1</span><br><span class="line">one:4, two2</span><br><span class="line">one:5, two0</span><br><span class="line">one:5, two1</span><br></pre></td></tr></table></figure>
+
+<h1 id="嵌套循环中continue的用法"><a href="#嵌套循环中continue的用法" class="headerlink" title="嵌套循环中continue的用法"></a>嵌套循环中continue的用法</h1><p>&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;同break一样，continue在嵌套循环中，也只影响所属的最近的循环，如果要控制外层循环，也需引用标签。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">printOutContinue</span><span class="params">()</span>&#123;</span><br><span class="line">        one:</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">            two:</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">j</span> <span class="operator">=</span> <span class="number">0</span>; j &lt; <span class="number">2</span>; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span>(<span class="number">3</span>&lt; i &amp;&amp; i &lt; <span class="number">7</span>)&#123;</span><br><span class="line">                    <span class="keyword">continue</span> one;</span><br><span class="line">                &#125;</span><br><span class="line">                System.out.println(<span class="string">&quot;one:&quot;</span> + i + <span class="string">&quot;, two&quot;</span> + j);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;输出结果为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">one:0, two0</span><br><span class="line">one:0, two1</span><br><span class="line">one:1, two0</span><br><span class="line">one:1, two1</span><br><span class="line">one:2, two0</span><br><span class="line">one:2, two1</span><br><span class="line">one:3, two0</span><br><span class="line">one:3, two1</span><br><span class="line">one:7, two0</span><br><span class="line">one:7, two1</span><br><span class="line">one:8, two0</span><br><span class="line">one:8, two1</span><br><span class="line">one:9, two0</span><br><span class="line">one:9, two1</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/03/07/%E4%BB%A3%E7%A0%81%E5%9D%97%E7%9A%84%E6%89%A7%E8%A1%8C%E9%A1%BA%E5%BA%8F/" rel="next" title="代码块的执行顺序">
+                  代码块的执行顺序 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="SOHUCS" sid="190038dd29ceab088feda038b31aa9e5"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">渝ICP备15006599号 </a>
+      <img src="http://www.beian.gov.cn/portal/download" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=50010702500853" rel="noopener" target="_blank">渝公网安备 50010702500853号 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eiby Shen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"cyuIlKzhJ","appkey":"prod_e4aa893e9253b2f9af366d3a0f508366"}</script>
+<script src="/js/third-party/comments/changyan.js"></script>
+
+</body>
+</html>

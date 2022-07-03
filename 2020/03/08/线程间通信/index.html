@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha256-DfWjNxDkM94fVBWx1H5BMMp0Zq7luBlV8QRcSES7s+0=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"www.abrocks.com","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.12.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="用一个比较流行的吃货和包子铺的案例来学习一下。 开启子线程的方法第一种是，创建Thread的子类对象，重写run()方法，将子线程要运行的代码写在run()方法的方法体内。第二种是构造一个Thread对象，传递一个Runnable的实现类对象，重写Runnable里的run()方法，把子线程要运行的代码写在run()方法的方法体内。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线程间通信">
+<meta property="og:url" content="https://www.abrocks.com/2020/03/08/%E7%BA%BF%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/index.html">
+<meta property="og:site_name" content="阿布洛克斯">
+<meta property="og:description" content="用一个比较流行的吃货和包子铺的案例来学习一下。 开启子线程的方法第一种是，创建Thread的子类对象，重写run()方法，将子线程要运行的代码写在run()方法的方法体内。第二种是构造一个Thread对象，传递一个Runnable的实现类对象，重写Runnable里的run()方法，把子线程要运行的代码写在run()方法的方法体内。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-08T04:41:51.000Z">
+<meta property="article:modified_time" content="2022-07-03T09:03:15.241Z">
+<meta property="article:author" content="Eiby Shen">
+<meta property="article:tag" content="java">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://www.abrocks.com/2020/03/08/%E7%BA%BF%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://www.abrocks.com/2020/03/08/%E7%BA%BF%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/","path":"2020/03/08/线程间通信/","title":"线程间通信"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>线程间通信 | 阿布洛克斯</title>
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">阿布洛克斯</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">谦虚，慎独，自省，感恩</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BC%80%E5%90%AF%E5%AD%90%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-number">1.</span> <span class="nav-text">开启子线程的方法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E9%94%81%E3%80%81%E7%AD%89%E5%BE%85%E5%92%8C%E5%94%A4%E9%86%92"><span class="nav-number">2.</span> <span class="nav-text">线程锁、等待和唤醒</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Eiby Shen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://www.abrocks.com/2020/03/08/%E7%BA%BF%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Eiby Shen">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="阿布洛克斯">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="线程间通信 | 阿布洛克斯">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          线程间通信
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-03-08 12:41:51" itemprop="dateCreated datePublished" datetime="2020-03-08T12:41:51+08:00">2020-03-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2022-07-03 17:03:15" itemprop="dateModified" datetime="2022-07-03T17:03:15+08:00">2022-07-03</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+        </span>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="线程间通信" href="/2020/03/08/%E7%BA%BF%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::2b7444da3596275b6c3b672df415c395" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>用一个比较流行的吃货和包子铺的案例来学习一下。</p>
+<h1 id="开启子线程的方法"><a href="#开启子线程的方法" class="headerlink" title="开启子线程的方法"></a>开启子线程的方法</h1><p>第一种是，创建Thread的子类对象，重写run()方法，将子线程要运行的代码写在run()方法的方法体内。<br>第二种是构造一个Thread对象，传递一个Runnable的实现类对象，重写Runnable里的run()方法，把子线程要运行的代码写在run()方法的方法体内。</p>
+<span id="more"></span>
+<h1 id="线程锁、等待和唤醒"><a href="#线程锁、等待和唤醒" class="headerlink" title="线程锁、等待和唤醒"></a>线程锁、等待和唤醒</h1><p>定义一个包子，flag标记店铺有没有包子</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Baozi</span> &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> flag; <span class="comment">//0代表没有包子了，1代表有包子</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">getFlag</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> flag;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">setFlag</span><span class="params">(<span class="type">int</span> flag)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.flag = flag;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后实现一个吃货的接口，每个吃货都去吃包子，吃完就走。<br>王俊凯是ChihuoImpl<br>王源是ChihuoImpl2<br>易烊千玺是ChihuoImpl3<br>这里只展示一份，内容都是一模一样的，只是类不一样</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ChihuoImpl</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> Baozi baozi;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">ChihuoImpl</span><span class="params">(Baozi baozi)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.baozi = baozi;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">synchronized</span> (baozi)&#123;</span><br><span class="line">                <span class="keyword">if</span>(baozi.getFlag() == <span class="number">0</span>)&#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        System.out.println(Thread.currentThread().getName() + <span class="string">&quot;等待包子铺生产包子！&quot;</span>);</span><br><span class="line">                        baozi.wait();</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                System.out.println(<span class="string">&quot;吃货&quot;</span> + Thread.currentThread().getName() + <span class="string">&quot;正在吃包子&quot;</span>);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">6</span>; i++) &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;吃啊吃&quot;</span>);</span><br><span class="line">                        Thread.sleep(<span class="number">500</span>);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                    baozi.setFlag(<span class="number">0</span>);</span><br><span class="line">                    baozi.notify();</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>实现包子铺接口，店铺需要不停地询问是否有包子，没有了就要开始做</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BaozipuImpl</span> <span class="keyword">implements</span> <span class="title class_">Runnable</span> &#123;</span><br><span class="line">    <span class="keyword">final</span> Baozi baozi;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BaozipuImpl</span><span class="params">(Baozi baozi)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.baozi = baozi;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>)&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (baozi)&#123;</span><br><span class="line">                <span class="keyword">if</span>(baozi.getFlag() == <span class="number">1</span>)&#123;</span><br><span class="line">                    <span class="keyword">try</span> &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;包子铺有包子，等待&quot;</span>);</span><br><span class="line">                        baozi.wait();</span><br><span class="line">                    &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                        e.printStackTrace();</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                System.out.println(<span class="string">&quot;包子铺开始生产包子&quot;</span>);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">5000</span>);</span><br><span class="line">                    System.out.println(<span class="string">&quot;包子铺生产好了包子&quot;</span>);</span><br><span class="line"></span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                    baozi.setFlag(<span class="number">1</span>);</span><br><span class="line">                    baozi.notify();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>main方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="type">Baozi</span> <span class="variable">baozi</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Baozi</span>();</span><br><span class="line">    <span class="type">ChihuoImpl</span> <span class="variable">chihuo1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChihuoImpl</span>(baozi);</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(chihuo1 , <span class="string">&quot;王俊凯&quot;</span>);</span><br><span class="line">    t1.start();</span><br><span class="line">    <span class="type">ChihuoImpl2</span> <span class="variable">chihuo2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChihuoImpl2</span>(baozi);</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t2</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(chihuo2 , <span class="string">&quot;王源&quot;</span>);</span><br><span class="line">    t2.start();</span><br><span class="line">    <span class="type">ChihuoImpl3</span> <span class="variable">chihuo3</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ChihuoImpl3</span>(baozi);</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t3</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(chihuo3 , <span class="string">&quot;易烊千玺&quot;</span>);</span><br><span class="line">    t3.start();</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t5</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>()&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">            <span class="built_in">super</span>.run();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="type">BaozipuImpl</span> <span class="variable">baozipu</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BaozipuImpl</span>(baozi);</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">t4</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Thread</span>(baozipu, <span class="string">&quot;包子铺&quot;</span>);</span><br><span class="line">    t4.start();</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出的结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">王俊凯等待包子铺生产包子！</span><br><span class="line">包子铺开始生产包子</span><br><span class="line">包子铺生产好了包子</span><br><span class="line">包子铺有包子，等待</span><br><span class="line">吃货易烊千玺正在吃包子</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">王源等待包子铺生产包子！</span><br><span class="line">包子铺开始生产包子</span><br><span class="line">包子铺生产好了包子</span><br><span class="line">包子铺有包子，等待</span><br><span class="line">吃货王俊凯正在吃包子</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">包子铺开始生产包子</span><br><span class="line">包子铺生产好了包子</span><br><span class="line">包子铺有包子，等待</span><br><span class="line">吃货王源正在吃包子</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">包子铺开始生产包子</span><br><span class="line">包子铺生产好了包子</span><br><span class="line">包子铺有包子，等待</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>以上main方法中，吃货们的Runnable实现类是使用同一个，还是各自创建一个实现类对象，结果是一样的，只要保证他们使用的是同一把锁就行。</li>
+<li>输出结果中，王俊凯在等待吃包子，结果包子铺唤醒后，抢上前来吃包子的是王源。也就是说，当线程等待时，已经失去了锁的权利，唤醒后又要跟其他线程抢锁的权利，抢到之后才能继续完成后面的代码。</li>
+</ol>
+<p>我们将代码修改一下，ChihuoImpl中吃货吃完包子之后，不调用notify()，不去唤醒包子铺，输出的结果是</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">吃货王俊凯正在吃包子</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">吃啊吃</span><br><span class="line">易烊千玺等待包子铺生产包子！</span><br><span class="line">王源等待包子铺生产包子！</span><br></pre></td></tr></table></figure>
+
+<p>由此可见，当线程抢夺到锁之后，如果遇到wait，那么就会失去锁的权利，让其他线程来继续抢夺锁。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/03/08/%E7%BA%BF%E7%A8%8B%E7%8A%B6%E6%80%81/" rel="prev" title="线程状态">
+                  <i class="fa fa-chevron-left"></i> 线程状态
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="SOHUCS" sid="2b7444da3596275b6c3b672df415c395"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="beian"><a href="https://beian.miit.gov.cn/" rel="noopener" target="_blank">渝ICP备15006599号 </a>
+      <img src="http://www.beian.gov.cn/portal/download" alt=""><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=50010702500853" rel="noopener" target="_blank">渝公网安备 50010702500853号 </a>
+  </div>
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Eiby Shen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+  
+
+
+
+
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"cyuIlKzhJ","appkey":"prod_e4aa893e9253b2f9af366d3a0f508366"}</script>
+<script src="/js/third-party/comments/changyan.js"></script>
+
+</body>
+</html>
